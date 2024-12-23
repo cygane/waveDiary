@@ -1,0 +1,17 @@
+@model project.Data.User
+
+<h1>Register</h1>
+
+<form asp-action="Register">
+    <div>
+        <label asp-for="username"></label>
+        <input asp-for="username" />
+        <span asp-validation-for="username" class="text-danger"></span>
+    </div>
+    <div>
+        <label asp-for="password"></label>
+        <input asp-for="password" type="password"/>
+    </div>
+    <button type="submit">Register</button>
+</form>
+
