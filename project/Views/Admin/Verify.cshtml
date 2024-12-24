@@ -1,0 +1,11 @@
+@model project.Data.Post
+
+<h1>Verify Post</h1>
+
+<p>Are you sure you want to verify this post?</p>
+
+<form asp-action="Verify">
+    <input type="hidden" asp-for="id" />
+    <button type="submit">Verify</button>
+    <a href="@Url.Action("ListAll", "Admin")">Cancel</a>
+</form>

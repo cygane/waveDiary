@@ -12,6 +12,8 @@ namespace project.Data
 
         public bool isPublic { get; set; } = false;
 
+        public bool isVerified { get; set; } = false;
+
         [Required(ErrorMessage = "Title is required.")]
         public string title { get; set; }
 

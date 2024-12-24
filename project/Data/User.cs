@@ -12,5 +12,9 @@ namespace project.Data
 
         [Required]
         public string password { get; set; }
+
+        public int numOfposts {get; set; } = 0;
+
+        public int latestId {get; set;}
     }
 }

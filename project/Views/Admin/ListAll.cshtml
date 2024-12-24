@@ -1,0 +1,34 @@
+@model IEnumerable<dynamic>
+
+<h1>Users</h1>
+
+@foreach (var item in Model)
+{
+    var user = item.User;
+    var latestPost = item.LatestPost;
+
+    <div>
+        <h2>@user.username</h2>
+        <p>Number of Posts: @user.numOfposts</p>
+
+        @if (latestPost != null)
+        {
+            <div>
+                <h3>Latest Post</h3>
+                <p>@latestPost.title</p>
+                <small>Posted on @latestPost.createdAt.ToString("g")</small>
+                <small>Verified: @latestPost.isVerified</small>
+                <p>❤️ @latestPost.hearts</p>
+                <p>
+                    <a href="@Url.Action("Verify", "Admin", new { id = latestPost.id })">Verify</a> |
+                    <a href="@Url.Action("Delete", "Posts", new { id = latestPost.id })">Delete</a>
+                </p>
+            </div>
+        }
+        else
+        {
+            <p>@user.username have not post anything yet.</p>
+        }
+    </div>
+}
+

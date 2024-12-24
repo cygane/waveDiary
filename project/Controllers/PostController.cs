@@ -47,7 +47,7 @@ namespace project.Controllers
         // POST: /Posts/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("id,title,text,photo,isPublic")]Post post)
+        public async Task<IActionResult> Create([Bind("title,text,photo,isPublic")]Post post)
         {
             var username = HttpContext.Session.GetString("Username");
             if (string.IsNullOrEmpty(username))
@@ -55,6 +55,8 @@ namespace project.Controllers
                 return RedirectToAction("Login", "Users");
             }
             
+            var user = _context.Users.FirstOrDefault(u => u.username == username);
+
             post.username = username;
             post.createdAt = DateTime.Now;
             post.hearts = 0;
@@ -64,6 +66,12 @@ namespace project.Controllers
             if (ModelState.IsValid)
             {
                 _context.Add(post);
+                await _context.SaveChangesAsync();
+
+                user.numOfposts += 1;
+                user.latestId = post.id;
+
+                _context.Update(user);
                 await _context.SaveChangesAsync();
                 return RedirectToAction("Display", "Posts");
             }
@@ -102,16 +110,17 @@ namespace project.Controllers
         }
 
         // POST: /Posts/Edit/{id}
+        //TODO
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, string username [Bind("id,title,text,photo,isPublic")] Post post)
+        public async Task<IActionResult> Edit(int id, string username, [Bind("id,title,text,photo,isPublic")] Post post)
         {
             if (id != post.id)
             {
                 return NotFound();
             }
 
-            var username = HttpContext.Session.GetString("Username");
+            // var username = HttpContext.Session.GetString("Username");
             if (string.IsNullOrEmpty(username))
             {
                 return RedirectToAction("Login", "Users");
@@ -134,6 +143,7 @@ namespace project.Controllers
                     existingPost.text = post.text;
                     existingPost.photo = post.photo;
                     existingPost.isPublic = post.isPublic;
+                    existingPost.isVerified = false;
 
                     _context.Update(existingPost);
                     await _context.SaveChangesAsync();
@@ -153,6 +163,7 @@ namespace project.Controllers
             return View(post);
         }
 
+        // GET: /Posts/Delete/{id}
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -169,14 +180,23 @@ namespace project.Controllers
             return View(post);
         }
 
-        // Confirming
+        // POST: /Posts/Delete/{id}
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
+            var username = HttpContext.Session.GetString("Username");
+
+            var user = _context.Users.FirstOrDefault(u => u.username == username);
+
             var post = await _context.Posts.FindAsync(id);
             _context.Posts.Remove(post);
             await _context.SaveChangesAsync();
+
+            user.numOfposts -= 1;
+            _context.Users.Update(user);
+            await _context.SaveChangesAsync();
+
             return RedirectToAction(nameof(Index));
         }
 

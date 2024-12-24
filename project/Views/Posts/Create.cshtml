@@ -3,6 +3,7 @@
 <h1>Create Post</h1>
 
 <form asp-action="Create">
+    <input type="hidden" asp-for="id" />
     <div>
         <label asp-for="title"></label>
         <input asp-for="title" />
