@@ -110,17 +110,16 @@ namespace project.Controllers
         }
 
         // POST: /Posts/Edit/{id}
-        //TODO
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, string username, [Bind("id,title,text,photo,isPublic")] Post post)
+        public async Task<IActionResult> Edit(int id, [Bind("id,username,title,text,photo,isPublic")] Post post)
         {
             if (id != post.id)
             {
                 return NotFound();
             }
 
-            // var username = HttpContext.Session.GetString("Username");
+            var username = HttpContext.Session.GetString("Username");
             if (string.IsNullOrEmpty(username))
             {
                 return RedirectToAction("Login", "Users");
