@@ -1,0 +1,11 @@
+@model project.Data.Post
+
+<h1>Delete Post</h1>
+
+<p>Are you sure you want to delete this post?</p>
+
+<form asp-action="Delete">
+    <input type="hidden" asp-for="id" />
+    <button type="submit">Delete</button>
+    <a href="@Url.Action("Index")">Cancel</a>
+</form>

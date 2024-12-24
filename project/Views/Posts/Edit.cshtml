@@ -1,0 +1,30 @@
+@model project.Data.Post
+
+<h1>Edit Post</h1>
+
+<form asp-action="Edit">
+    <input type="hidden" asp-for="id" />
+    <input type="hidden" asp-for="username" />
+    <div>
+        <label asp-for="title"></label>
+        <input asp-for="title" />
+        <span asp-validation-for="title" class="text-danger"></span>
+    </div>
+    <div>
+        <label asp-for="text"></label>
+        <textarea asp-for="text"></textarea>
+        <span asp-validation-for="text" class="text-danger"></span>
+    </div>
+    <div>
+        <label asp-for="photo"></label>
+        <input asp-for="photo" />
+        <span asp-validation-for="photo" class="text-danger"></span>
+    </div>
+    <div>
+        <label asp-for="isPublic"></label>
+        <input asp-for="isPublic" type="checkbox" />
+        <span asp-validation-for="isPublic" class="text-danger"></span>
+    </div>
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <button type="submit">Edit Post</button>
+</form>

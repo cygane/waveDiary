@@ -1,0 +1,13 @@
+@model IEnumerable<project.Data.Post>
+
+<h1>Posts</h1>
+
+@foreach (var post in Model)
+{
+    <div>
+        <h2>@post.title</h2>
+        <p>@post.text</p>
+        <small>Posted by @post.username on @post.createdAt.ToString("g")</small>
+        <p>❤️ @post.hearts</p>
+    </div>
+}
