@@ -16,5 +16,8 @@ namespace project.Data
         public int numOfposts {get; set; } = 0;
 
         public int latestId {get; set;}
+
+        [Required]
+        public string role { get; set; } = "user";
     }
 }

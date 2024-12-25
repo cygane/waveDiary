@@ -18,14 +18,10 @@ namespace project.Controllers
         }
 
         // GET: /Posts/Display
+        [AuthorizeUser]
         public async Task<IActionResult> Display()
         {
             var username = HttpContext.Session.GetString("Username");
-            if (string.IsNullOrEmpty(username))
-            {
-                return RedirectToAction("Login", "Users");
-            }
-
             var posts = _context.Posts.Where(p => p.username == username).OrderByDescending(p => p.createdAt);
 
             return View(await posts.ToListAsync());
@@ -33,28 +29,19 @@ namespace project.Controllers
 
 
         // GET: /Posts/Create
+        [AuthorizeUser]
         public IActionResult Create()
         {
-            var username = HttpContext.Session.GetString("Username");
-            if (string.IsNullOrEmpty(username))
-            {
-                return RedirectToAction("Login", "Users");
-            }
-
             return View(new Post());
         }
 
         // POST: /Posts/Create
+        [AuthorizeUser]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("title,text,photo,isPublic")]Post post)
         {
             var username = HttpContext.Session.GetString("Username");
-            if (string.IsNullOrEmpty(username))
-            {
-                return RedirectToAction("Login", "Users");
-            }
-            
             var user = _context.Users.FirstOrDefault(u => u.username == username);
 
             post.username = username;
@@ -87,6 +74,7 @@ namespace project.Controllers
         }
 
         // GET: /Posts/Edit/{id}
+        [AuthorizeUser]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -95,12 +83,8 @@ namespace project.Controllers
             }
 
             var username = HttpContext.Session.GetString("Username");
-            if (string.IsNullOrEmpty(username))
-            {
-                return RedirectToAction("Login", "Users");
-            }
-
             var post = await _context.Posts.FindAsync(id);
+
             if (post == null || post.username != username)
             {
                 return Unauthorized();
@@ -110,6 +94,7 @@ namespace project.Controllers
         }
 
         // POST: /Posts/Edit/{id}
+        [AuthorizeUser]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("id,username,title,text,photo,isPublic")] Post post)
@@ -120,10 +105,6 @@ namespace project.Controllers
             }
 
             var username = HttpContext.Session.GetString("Username");
-            if (string.IsNullOrEmpty(username))
-            {
-                return RedirectToAction("Login", "Users");
-            }
 
             if (post.username != username)
             {
@@ -163,12 +144,11 @@ namespace project.Controllers
         }
 
         // GET: /Posts/Delete/{id}
+        [AuthorizeUser]
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            var username = HttpContext.Session.GetString("Username");
+            var user = _context.Users.FirstOrDefault(u => u.username == username);
 
             var post = await _context.Posts.FirstOrDefaultAsync(m => m.id == id);
             if (post == null)
@@ -176,19 +156,28 @@ namespace project.Controllers
                 return NotFound();
             }
 
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            if(post.username != username && user.role != "admin"){
+                return Unauthorized();
+            }
+
             return View(post);
         }
 
         // POST: /Posts/Delete/{id}
+        [AuthorizeUser]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var username = HttpContext.Session.GetString("Username");
-
             var user = _context.Users.FirstOrDefault(u => u.username == username);
-
             var post = await _context.Posts.FindAsync(id);
+
             _context.Posts.Remove(post);
             await _context.SaveChangesAsync();
 
@@ -196,7 +185,7 @@ namespace project.Controllers
             _context.Users.Update(user);
             await _context.SaveChangesAsync();
 
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction("Display", "Posts");
         }
 
     }

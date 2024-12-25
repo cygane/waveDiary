@@ -17,6 +17,12 @@ namespace project.Controllers
             _context = context;
         }
 
+        // GET: /Users/AccessDenied
+        public IActionResult AccessDenied()
+        {
+            return View();
+        }
+
         // GET: /Users/Register
         public IActionResult Register()
         {
@@ -33,6 +39,10 @@ namespace project.Controllers
                 {
                     ModelState.AddModelError("username", "Username already exists.");
                     return View(user);
+                }
+
+                if(user.username == "admin1"){
+                    user.role = "admin";
                 }
 
                 var passwordHash = HashPassword(password);
@@ -66,8 +76,9 @@ namespace project.Controllers
             }
 
             HttpContext.Session.SetString("Username", user.username);
+            HttpContext.Session.SetString("Role", user.role);
 
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Index", "Posts");
         }
 
         // GET: /Users/Logout

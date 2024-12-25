@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace project.Controllers
 {
+    [AuthorizeUser(role: "admin")]
     public class AdminController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -20,12 +21,6 @@ namespace project.Controllers
         // GET: /Admin/ListAll
         public async Task<IActionResult> ListAll()
         {
-            var username = HttpContext.Session.GetString("Username");
-            if (username != "admin")
-            {
-                return RedirectToAction("Login", "Users");
-            }
-
             var usersWithPosts = await _context.Users
             .Select(user => new
                 {
