@@ -1,5 +1,5 @@
 using Microsoft.EntityFrameworkCore;
-using project.Models;
+using project.Data;
 
 namespace project.Data
 {
@@ -12,5 +12,6 @@ namespace project.Data
 
         public DbSet<User> Users { get; set; }
         public DbSet<Post> Posts { get; set; }
+        public DbSet<UsersLike> UsersLikes { get; set; }
     }
 }

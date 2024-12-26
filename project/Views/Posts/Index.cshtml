@@ -8,6 +8,40 @@
         <h2>@post.title</h2>
         <p>@post.text</p>
         <small>Posted by @post.username on @post.createdAt.ToString("g")</small>
-        <p>❤️ @post.hearts</p>
+        <p>
+            <button class="toggle-heart" type="button" data-id=@post.id> ❤️ </button>
+            <span class="heart-count">@post.hearts</span>
+        </p>
     </div>
 }
+
+<script>
+    document.querySelectorAll('.toggle-heart').forEach(button => {
+        button.addEventListener('click', async () => {
+            const postId = button.getAttribute('data-id');
+            const heartCountSpan = button.nextElementSibling;
+            
+            const response = await fetch(`/Posts/ToggleHeart?id=${postId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '@Html.AntiForgeryToken()'
+                }
+            });
+
+            if (response.redirected) {
+                window.location.href = response.url; 
+                return;
+            }
+
+            const result = await response.json();
+            if (result.success) {
+                heartCountSpan.textContent = result.hearts;
+            } else {
+                alert(result.message || 'Error toggling heart.');
+            }
+
+            
+        });
+    });
+</script>

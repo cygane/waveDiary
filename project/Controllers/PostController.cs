@@ -188,6 +188,42 @@ namespace project.Controllers
             return RedirectToAction("Display", "Posts");
         }
 
+        [AuthorizeUser]
+        [HttpPost]
+        public async Task<IActionResult> ToggleHeart(int id)
+        {
+            var username = HttpContext.Session.GetString("Username");
+            var post = await _context.Posts.FirstOrDefaultAsync(p => p.id == id);
+
+             if (string.IsNullOrEmpty(username))
+            {
+                return Json(new { success = false, message = "User not logged in." });
+            }
+
+            if (post == null)
+            {
+               return Json(new { success = false, message = "Post not found." });
+            }
+
+            var userLike = _context.UsersLikes.FirstOrDefault(ul => ul.postId == id && ul.username == username);
+
+            if (userLike == null)
+            {
+                _context.UsersLikes.Add(new UsersLike { postId = id, username = username });
+                post.hearts++;
+            }
+            else
+            {
+                _context.UsersLikes.Remove(userLike);
+                post.hearts--;
+            }
+
+            await _context.SaveChangesAsync();
+
+            return Json(new { success = true, hearts = post.hearts });
+        }
+
+
     }
 }
 
