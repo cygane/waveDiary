@@ -1,6 +1,38 @@
+@using Microsoft.AspNetCore.Http
 @model IEnumerable<dynamic>
 
+
 <h1>Users</h1>
+
+<form method="get" action="@Url.Action("ListAll", "Admin")">
+    <input type="text" name="searchString" placeholder="Search..."
+           value="@ViewContext.HttpContext.Request.Query["searchString"]" />
+
+    <select name="sortOrder" id="sortOrder">
+        <option value="username_asc">Username (A-Z)</option>
+        <option value="username_desc">Username (Z-A)</option>
+        <option value="numOfposts_asc">Fewest Posts</option>
+        <option value="numOfposts_desc">Most Posts</option>
+        <option value="role_asc">Role (A-Z)</option>
+        <option value="role_desc">Role (Z-A)</option>
+    </select>
+
+    <button type="submit">Search in Users</button>
+</form>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var sortOrder = '@ViewBag.SortOrder';  
+        var selectElement = document.getElementById('sortOrder');
+        
+        for (var i = 0; i < selectElement.options.length; i++) {
+            if (selectElement.options[i].value === sortOrder) {
+                selectElement.selectedIndex = i;
+                break;
+            }
+        }
+    });
+</script>
 
 @foreach (var item in Model)
 {
@@ -10,6 +42,7 @@
     <div>
         <h2>@user.username</h2>
         <p>Number of Posts: @user.numOfposts</p>
+        <p>Role : @user.role</p>
 
         @if (latestPost != null)
         {

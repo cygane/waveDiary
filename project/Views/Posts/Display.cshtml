@@ -1,8 +1,42 @@
-@model IEnumerable<project.Data.Post>
+@using Microsoft.AspNetCore.Http
+@{
+    var posts = ViewBag.Posts as IEnumerable<project.Data.Post>;
+    var sortOrder = ViewBag.SortOrder as string;
+}
 
 <h1>Your Posts</h1>
 
-@foreach (var post in Model)
+<form method="get" action="@Url.Action("Display", "Posts")">
+    <input type="text" name="searchString" placeholder="Search..."
+           value="@ViewContext.HttpContext.Request.Query["searchString"]" />
+
+    <select name="sortOrder" id="sortOrder">
+        <option value="created_desc">Newest</option>
+        <option value="created_asc">Oldest</option>
+        <option value="title_asc">Title (A-Z)</option>
+        <option value="title_desc">Title (Z-A)</option>
+        <option value="hearts_asc">Fewest Hearts</option>
+        <option value="hearts_desc">Most Hearts</option>
+    </select>
+
+    <button type="submit">Search</button>
+</form>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var sortOrder = '@Model.SortOrder';  
+        var selectElement = document.getElementById('sortOrder');
+        
+        for (var i = 0; i < selectElement.options.length; i++) {
+            if (selectElement.options[i].value === sortOrder) {
+                selectElement.selectedIndex = i;
+                break;
+            }
+        }
+    });
+</script>
+
+@foreach (var post in Model.Posts)
 {
     <div>
         <h2>@post.title</h2>

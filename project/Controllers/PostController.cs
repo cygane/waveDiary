@@ -19,12 +19,28 @@ namespace project.Controllers
 
         // GET: /Posts/Display
         [AuthorizeUser]
-        public async Task<IActionResult> Display()
+        public async Task<IActionResult> Display(string searchString, string sortOrder)
         {
             var username = HttpContext.Session.GetString("Username");
-            var posts = _context.Posts.Where(p => p.username == username).OrderByDescending(p => p.createdAt);
+            var posts = _context.Posts.Where(p => p.username == username);
 
-            return View(await posts.ToListAsync());
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                posts = posts.Where(p => p.title.Contains(searchString) || p.text.Contains(searchString));
+            }
+
+            posts = sortOrder switch
+            {
+                "title_asc" => posts.OrderBy(p => p.title),
+                "title_desc" => posts.OrderByDescending(p => p.title),
+                "created_asc" => posts.OrderBy(p => p.createdAt),
+                "created_desc" => posts.OrderByDescending(p => p.createdAt),
+                "hearts_asc" => posts.OrderBy(p => p.hearts),
+                "hearts_desc" => posts.OrderByDescending(p => p.hearts),
+                _ => posts.OrderByDescending(p => p.createdAt) 
+            };
+
+            return View(new { Posts = await posts.ToListAsync(), SortOrder = sortOrder });
         }
 
 
@@ -67,10 +83,31 @@ namespace project.Controllers
         }
 
         // GET: /Posts/Index
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string searchString,string usersearchString, string sortOrder)
         {
-            var posts = _context.Posts.Where(p => p.isPublic).OrderByDescending(p => p.createdAt);
-            return View(await posts.ToListAsync());
+            var posts = _context.Posts.Where(p => p.isPublic);
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                posts = posts.Where(p => p.title.Contains(searchString) || p.text.Contains(searchString));
+            }
+
+            if (!string.IsNullOrEmpty(usersearchString))
+            {
+                posts = posts.Where(p => p.username.Contains(usersearchString));
+            }
+
+            posts = sortOrder switch
+            {
+                "title_asc" => posts.OrderBy(p => p.title),
+                "title_desc" => posts.OrderByDescending(p => p.title),
+                "created_asc" => posts.OrderBy(p => p.createdAt),
+                "created_desc" => posts.OrderByDescending(p => p.createdAt),
+                "hearts_asc" => posts.OrderBy(p => p.hearts),
+                "hearts_desc" => posts.OrderByDescending(p => p.hearts),
+                _ => posts.OrderByDescending(p => p.createdAt) 
+            };
+
+            return View(new { Posts = await posts.ToListAsync(), SortOrder = sortOrder });
         }
 
         // GET: /Posts/Edit/{id}
@@ -194,11 +231,6 @@ namespace project.Controllers
         {
             var username = HttpContext.Session.GetString("Username");
             var post = await _context.Posts.FirstOrDefaultAsync(p => p.id == id);
-
-             if (string.IsNullOrEmpty(username))
-            {
-                return Json(new { success = false, message = "User not logged in." });
-            }
 
             if (post == null)
             {

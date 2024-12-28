@@ -5,6 +5,8 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+// using project.Models;
+
 
 namespace project.Controllers
 {
@@ -19,17 +21,35 @@ namespace project.Controllers
         }
 
         // GET: /Admin/ListAll
-        public async Task<IActionResult> ListAll()
+        public async Task<IActionResult> ListAll(string searchString, string sortOrder)
         {
-            var usersWithPosts = await _context.Users
-            .Select(user => new
+            var usersWithPostsQuery = _context.Users
+            .Select(user => new 
                 {
                     User = user,
                     LatestPost = _context.Posts
                         .Where(post => post.id == user.latestId)
                         .FirstOrDefault()
-                })
-                .ToListAsync();
+                });
+            
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                usersWithPostsQuery = usersWithPostsQuery.Where(p => p.User.username.Contains(searchString));
+            }
+
+            usersWithPostsQuery = sortOrder switch
+            {
+                "username_asc" => usersWithPostsQuery.OrderBy(p => p.User.username),
+                "username_desc" => usersWithPostsQuery.OrderByDescending(p => p.User.username),
+                "numOfposts_asc" => usersWithPostsQuery.OrderBy(p => p.User.numOfposts),
+                "numOfposts_desc" => usersWithPostsQuery.OrderByDescending(p => p.User.numOfposts),
+                "role_asc" => usersWithPostsQuery.OrderBy(p => p.User.role),
+                "role_desc" => usersWithPostsQuery.OrderByDescending(p => p.User.role),
+                _ => usersWithPostsQuery.OrderByDescending(p => p.User.username) 
+            };
+
+            var usersWithPosts = await usersWithPostsQuery.ToListAsync();
+            ViewBag.SortOrder = sortOrder;
 
             return View(usersWithPosts);
         }
