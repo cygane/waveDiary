@@ -5,43 +5,34 @@
 <head>
     <style>
         .body {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            height: 100vh;
+            max-width: 1000px;
+            margin: 0 auto;
         }
 
         h1 {
             text-align: center;
-            color: #d4a017; /* Deep yellow for the heading */
             margin-bottom: 20px;
         }
 
         .form-edit {
-            background-color: #fff4cc; /* Soft yellow form background */
-            border: 4px solid #d4a017; /* Deep yellow border */
+            border: 2px solid #d4a017;
             border-radius: 8px;
+            margin-bottom: 20px;
             padding: 20px;
-            width: 80%;
-            max-width: 600px;
-            margin: 20px auto;
-            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
         }
 
         .labelEdit {
             display: block;
             margin-bottom: 8px;
             font-weight: bold;
-            color: #d4a017; /* Deep yellow for labels */
+            color: #d4a017; 
         }
 
         .inputEdit {
             width: 100%;
-            padding: 15px; /* Taller inputs */
+            padding: 15px; 
             margin-bottom: 15px;
             border: 1px solid #d4a017;
             border-radius: 5px;
@@ -51,7 +42,7 @@
 
         textarea.inputEdit {
             resize: none;
-            height: 100px; /* Adjust height for textarea */
+            height: 100px; 
         }
 
         .checkbox-container {
@@ -67,22 +58,22 @@
         }
 
         .submit-button {
-            background-color: #d4a017; /* Deep yellow button */
+            background-color: #d4a017; 
             color: white;
             padding: 10px 15px;
             border: none;
             border-radius: 5px;
             cursor: pointer;
-            align-self: flex-end; /* Align button to the right */
+            align-self: flex-end; 
         }
 
         .submit-button:hover {
-            background-color: #b48814; /* Darker yellow on hover */
+            background-color: #b48814; 
         }
 
         .button-container {
             display: flex;
-            justify-content: flex-end; /* Align button to the right */
+            justify-content: flex-end; 
         }
     </style>
 </head>
