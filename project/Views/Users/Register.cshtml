@@ -1,17 +1,96 @@
 @model project.Data.User
 
-<h1>Register</h1>
+@* TODO: do better *@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <style>
+        .body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+        }
 
-<form asp-action="Register">
-    <div>
-        <label asp-for="username"></label>
-        <input asp-for="username" />
-        <span asp-validation-for="username" class="text-danger"></span>
+        h1 {
+            text-align: center;
+            color: #0056b3; /* Deep blue for the heading */
+            margin-bottom: 20px;
+        }
+
+        .form-register {
+            background-color: hsl(211, 70%, 85%); /* Light blue form background */
+            border: 4px solid #007bff; /* Deep blue border */
+            border-radius: 8px;
+            padding: 20px;
+            width: 80%;
+            max-width: 400px;
+            margin: 20px auto;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .labelRegister {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #0056b3; /* Deep blue for labels */
+        }
+
+        .inputRegister {
+            width: 100%;
+            padding: 15px; /* Taller inputs */
+            margin-bottom: 15px;
+            border: 1px solid #007bff;
+            border-radius: 5px;
+            font-size: 14px;
+            height: 50px;
+        }
+
+        .submit-button {
+            background-color: #007bff; /* Deep blue button */
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 16px;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .submit-button:hover {
+            background-color: #0056b3; /* Darker blue on hover */
+        }
+
+        .validation-summary {
+            color: #d9534f; /* Red for validation messages */
+            font-size: 14px;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="body">
+        <h1>Register</h1>
+        <form class="form-register" asp-action="Register">
+            <div>
+                <label class="labelRegister" asp-for="username">Username</label>
+                <input class="inputRegister" asp-for="username" />
+                <span asp-validation-for="username" class="validation-summary"></span>
+            </div>
+            <div>
+                <label class="labelRegister" asp-for="password">Password</label>
+                <input class="inputRegister" asp-for="password" type="password" />
+                <span asp-validation-for="password" class="validation-summary"></span>
+            </div>
+            <button class="submit-button" type="submit">Register</button>
+        </form>
     </div>
-    <div>
-        <label asp-for="password"></label>
-        <input asp-for="password" type="password"/>
-    </div>
-    <button type="submit">Register</button>
-</form>
+</body>
+</html>
 

@@ -4,81 +4,211 @@
     var sortOrder = ViewBag.SortOrder as string;
 }
 
-<h1>Posts</h1>
-
-<form method="get" action="@Url.Action("Index", "Posts")">
-    <input type="text" name="searchString" placeholder="Search in Post..."
-           value="@ViewContext.HttpContext.Request.Query["searchString"]" />
-
-    <input type="text" name="usersearchString" placeholder="Search in User..."
-           value="@ViewContext.HttpContext.Request.Query["usersearchString"]" />
-
-    <select name="sortOrder" id="sortOrder">
-        <option value="created_desc">Newest</option>
-        <option value="created_asc">Oldest</option>
-        <option value="title_asc">Title (A-Z)</option>
-        <option value="title_desc">Title (Z-A)</option>
-        <option value="hearts_asc">Fewest Hearts</option>
-        <option value="hearts_desc">Most Hearts</option>
-    </select>
-
-    <button type="submit">Search</button>
-</form>
-
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        var sortOrder = '@Model.SortOrder';  
-        var selectElement = document.getElementById('sortOrder');
-        
-        for (var i = 0; i < selectElement.options.length; i++) {
-            if (selectElement.options[i].value === sortOrder) {
-                selectElement.selectedIndex = i;
-                break;
-            }
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <style>
+        h1 {
+            text-align: center;
+            margin-top: 20px;
         }
-    });
-</script>
 
-@foreach (var post in Model.Posts)
-{
-    <div>
-        <h2>@post.title</h2>
-        <p>@post.text</p>
-        <small>Posted by @post.username on @post.createdAt.ToString("g")</small>
-        <p>
-            <button class="toggle-heart" type="button" data-id=@post.id> ❤️ </button>
-            <span class="heart-count">@post.hearts</span>
-        </p>
-    </div>
-}
+        .body {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
 
-<script>
-    document.querySelectorAll('.toggle-heart').forEach(button => {
-        button.addEventListener('click', async () => {
-            const postId = button.getAttribute('data-id');
-            const heartCountSpan = button.nextElementSibling;
-            
-            const response = await fetch(`/Posts/ToggleHeart?id=${postId}`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': '@Html.AntiForgeryToken()'
+        form {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: center;
+            margin-bottom: 30px;
+        }
+
+        input[type="text"], select {
+            padding: 10px;
+            font-size: 16px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            width: 250px;
+        }
+
+        button[type="submit"] {
+            background-color: #f9c74f;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            border-radius: 5px;
+            color: #fff;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button[type="submit"]:hover {
+            background-color: #f1a65f;
+        }
+
+        .card {
+            border-radius: 8px;
+            margin-bottom: 20px;
+            padding: 20px;
+            transition: transform 0.3s ease;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .border-success {
+            border: 2px solid #28a745;
+        }
+
+        .border-warning {
+            border: 2px solid #ffc107;
+        }
+
+        .border-secondary {
+            border: 2px solid #6c757d;
+        }
+
+        .card-body {
+            padding: 20px;
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .card-text {
+            font-size: 1rem;
+            color: #555;
+            margin-bottom: 10px;
+        }
+
+        small.text-muted {
+            font-size: 0.875rem;
+            color: #888;
+        }
+
+        .card .d-flex {
+            font-size: 1.1rem;
+            align-items: center;
+        }
+
+        .card .card-footer {
+            border-top: 1px solid #e1e1e1;
+            padding-top: 15px;
+        }
+
+        .card .card-footer a {
+            color: #007bff;
+            font-size: 1rem;
+            text-decoration: none;
+            padding: 5px 10px;
+        }
+
+        .card .card-footer a:hover {
+            text-decoration: underline;
+        }
+
+        .card .actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .toggle-heart {
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="body">
+        <h1>Posts</h1>
+
+        <form method="get" action="@Url.Action("Index", "Posts")">
+            <input type="text" name="searchString" placeholder="Search in Post..."
+                value="@ViewContext.HttpContext.Request.Query["searchString"]" />
+
+            <input type="text" name="usersearchString" placeholder="Search in User..."
+                value="@ViewContext.HttpContext.Request.Query["usersearchString"]" />
+
+            <select name="sortOrder" id="sortOrder">
+                <option value="created_desc">Newest</option>
+                <option value="created_asc">Oldest</option>
+                <option value="title_asc">Title (A-Z)</option>
+                <option value="title_desc">Title (Z-A)</option>
+                <option value="hearts_asc">Fewest Hearts</option>
+                <option value="hearts_desc">Most Hearts</option>
+            </select>
+
+            <button type="submit">Search</button>
+        </form>
+
+        @foreach (var post in Model.Posts)
+        {
+            <div class="card @((post.isVerified ? "border-success" : post.username == "admin" ? "border-warning" : "border-secondary"))">
+                <div class="card-body">
+                    <h2 class="card-title">@post.title</h2>
+                    <p class="card-text">@post.text</p>
+                    <small class="text-muted">Posted by @post.username on @post.createdAt.ToString("g")</small>
+                    <div class="actions">
+                        <button class="toggle-heart" type="button" data-id="@post.id">❤️</button>
+                        <span class="heart-count">@post.hearts</span>
+                    </div>
+                </div>
+            </div>
+        }
+
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                var sortOrder = '@sortOrder';  
+                var selectElement = document.getElementById('sortOrder');
+                
+                for (var i = 0; i < selectElement.options.length; i++) {
+                    if (selectElement.options[i].value === sortOrder) {
+                        selectElement.selectedIndex = i;
+                        break;
+                    }
                 }
             });
 
-            if (response.redirected) {
-                window.location.href = response.url; 
-                return;
-            }
+            document.querySelectorAll('.toggle-heart').forEach(button => {
+                button.addEventListener('click', async () => {
+                    const postId = button.getAttribute('data-id');
+                    const heartCountSpan = button.nextElementSibling;
+                    
+                    const response = await fetch(`/Posts/ToggleHeart?id=${postId}`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': '@Html.AntiForgeryToken()'
+                        }
+                    });
 
-            const result = await response.json();
-            if (result.success) {
-                heartCountSpan.textContent = result.hearts;
-            } else {
-                alert(result.message || 'Error toggling heart.');
-            }
+                    if (response.redirected) {
+                        window.location.href = response.url; 
+                        return;
+                    }
 
-            
-        });
-    });
-</script>
+                    const result = await response.json();
+                    if (result.success) {
+                        heartCountSpan.textContent = result.hearts;
+                    } else {
+                        alert(result.message || 'Error toggling heart.');
+                    }
+                });
+            });
+        </script>
+    </div>
+</body>
+</html>
+

@@ -1,30 +1,122 @@
 @model project.Data.Post
 
-<h1>Edit Post</h1>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <style>
+        .body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+        }
 
-<form asp-action="Edit">
-    <input type="hidden" asp-for="id" />
-    <input type="hidden" asp-for="username" />
-    <div>
-        <label asp-for="title"></label>
-        <input asp-for="title" />
-        <span asp-validation-for="title" class="text-danger"></span>
+        h1 {
+            text-align: center;
+            color: #d4a017; /* Deep yellow for the heading */
+            margin-bottom: 20px;
+        }
+
+        .form-edit {
+            background-color: #fff4cc; /* Soft yellow form background */
+            border: 4px solid #d4a017; /* Deep yellow border */
+            border-radius: 8px;
+            padding: 20px;
+            width: 80%;
+            max-width: 600px;
+            margin: 20px auto;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .labelEdit {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #d4a017; /* Deep yellow for labels */
+        }
+
+        .inputEdit {
+            width: 100%;
+            padding: 15px; /* Taller inputs */
+            margin-bottom: 15px;
+            border: 1px solid #d4a017;
+            border-radius: 5px;
+            font-size: 14px;
+            height: 50px;
+        }
+
+        textarea.inputEdit {
+            resize: none;
+            height: 100px; /* Adjust height for textarea */
+        }
+
+        .checkbox-container {
+            display: inline-flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .inputCheckbox {
+            margin-right: 10px;
+            width: 20px;
+            height: 20px;
+        }
+
+        .submit-button {
+            background-color: #d4a017; /* Deep yellow button */
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            align-self: flex-end; /* Align button to the right */
+        }
+
+        .submit-button:hover {
+            background-color: #b48814; /* Darker yellow on hover */
+        }
+
+        .button-container {
+            display: flex;
+            justify-content: flex-end; /* Align button to the right */
+        }
+    </style>
+</head>
+<body>
+    <div class="body">
+        <h1>Edit Post</h1>
+        <form class="form-edit" asp-action="Edit">
+            <input type="hidden" asp-for="id" />
+            <input type="hidden" asp-for="username" />
+            <div>
+                <label class="labelEdit" asp-for="title"></label>
+                <input class="inputEdit" asp-for="title" />
+                <span asp-validation-for="title" class="text-danger"></span>
+            </div>
+            <div>
+                <label class="labelEdit" asp-for="text"></label>
+                <textarea class="inputEdit" asp-for="text"></textarea>
+                <span asp-validation-for="text" class="text-danger"></span>
+            </div>
+            <div>
+                <label class="labelEdit" asp-for="photo"></label>
+                <input class="inputEdit" asp-for="photo" />
+                <span asp-validation-for="photo" class="text-danger"></span>
+            </div>
+            <div class="checkbox-container">
+                <label class="labelEdit" asp-for="isPublic"></label>
+                <input class="inputCheckbox" asp-for="isPublic" type="checkbox" />
+                <span asp-validation-for="isPublic" class="text-danger"></span>
+            </div>
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="button-container">
+                <button class="submit-button" type="submit">Edit Post</button>
+            </div>
+        </form>
     </div>
-    <div>
-        <label asp-for="text"></label>
-        <textarea asp-for="text"></textarea>
-        <span asp-validation-for="text" class="text-danger"></span>
-    </div>
-    <div>
-        <label asp-for="photo"></label>
-        <input asp-for="photo" />
-        <span asp-validation-for="photo" class="text-danger"></span>
-    </div>
-    <div>
-        <label asp-for="isPublic"></label>
-        <input asp-for="isPublic" type="checkbox" />
-        <span asp-validation-for="isPublic" class="text-danger"></span>
-    </div>
-    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-    <button type="submit">Edit Post</button>
-</form>
+</body>
+</html>

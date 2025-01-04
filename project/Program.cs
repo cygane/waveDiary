@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using project.Data;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,6 +11,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.AddDistributedMemoryCache();
+builder.Services.AddHttpContextAccessor();
 builder.Services.AddSession();
 
 var app = builder.Build();
