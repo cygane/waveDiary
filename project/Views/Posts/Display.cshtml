@@ -100,20 +100,38 @@
             align-items: center;
         }
 
-        .card .card-footer {
-            border-top: 1px solid #e1e1e1;
+        .card .card-buttons {
             padding-top: 15px;
         }
 
-        .card .card-footer a {
-            color: #007bff;
+        .a-delete {
             font-size: 1rem;
+            color: #007bff;
             text-decoration: none;
-            padding: 5px 10px;
+            padding: 10px 20px;
+            background-color: #f8f9fa;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            transition: background-color 0.3s, color 0.3s;
         }
 
-        .card .card-footer a:hover {
-            text-decoration: underline;
+        .a-delete:hover {
+            color: #e2e6ea;
+        }
+
+        .a-edit {
+            font-size: 1rem;
+            color: #007bff;
+            text-decoration: none;
+            padding: 10px 20px;
+            background-color: #d4a017;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .a-edit:hover {
+            color: #b48814;
         }
     </style>
 </head>
@@ -162,9 +180,9 @@
                         ❤️ @post.hearts
                     </p>
                 </div>
-                <div class="card-footer">
-                    <a href="@Url.Action("Edit", "Posts", new { id = post.id })">Edit</a> | 
-                    <a href="@Url.Action("Delete", "Posts", new { id = post.id })">Delete</a>
+                <div class="card-buttons">
+                    <a class="a-edit" href="@Url.Action("Edit", "Posts", new { id = post.id })">Edit</a> | 
+                    <a class="a-delete" href="@Url.Action("Delete", "Posts", new { id = post.id })">Delete</a>
                 </div>
             </div>
         }
