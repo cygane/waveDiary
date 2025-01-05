@@ -41,7 +41,7 @@ namespace project.Controllers
                     return View(user);
                 }
 
-                if(user.username == "admin1"){
+                if(user.username == "admin"){
                     user.role = "admin";
                 }
 

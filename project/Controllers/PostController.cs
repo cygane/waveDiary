@@ -55,7 +55,7 @@ namespace project.Controllers
         [AuthorizeUser]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("title,text,photo,isPublic")]Post post)
+        public async Task<IActionResult> Create([Bind("title,text,isPublic")]Post post)
         {
             var username = HttpContext.Session.GetString("Username");
             var user = _context.Users.FirstOrDefault(u => u.username == username);
@@ -71,11 +71,14 @@ namespace project.Controllers
                 _context.Add(post);
                 await _context.SaveChangesAsync();
 
-                user.numOfposts += 1;
-                user.latestId = post.id;
+                if (post.isPublic)
+                {
+                    user.numOfposts += 1;
+                    user.latestId = post.id;
 
-                _context.Update(user);
-                await _context.SaveChangesAsync();
+                    _context.Update(user);
+                    await _context.SaveChangesAsync();
+                }
                 return RedirectToAction("Display", "Posts");
             }
 
@@ -134,7 +137,7 @@ namespace project.Controllers
         [AuthorizeUser]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("id,username,title,text,photo,isPublic")] Post post)
+        public async Task<IActionResult> Edit(int id, [Bind("id,username,title,text,isPublic")] Post post)
         {
             if (id != post.id)
             {
@@ -158,7 +161,6 @@ namespace project.Controllers
                    
                     existingPost.title = post.title;
                     existingPost.text = post.text;
-                    existingPost.photo = post.photo;
                     existingPost.isPublic = post.isPublic;
                     existingPost.isVerified = false;
 

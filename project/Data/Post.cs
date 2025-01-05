@@ -19,8 +19,6 @@ namespace project.Data
 
         public string text { get; set; } = "";
 
-        public string photo { get; set; } = "";
-
         public int hearts { get; set; } = 0;
 
         [Required]

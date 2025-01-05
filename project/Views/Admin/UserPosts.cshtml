@@ -119,8 +119,8 @@
             background-color: #c82333;
         }
 
-        .a-edit {
-            background-color: #d4a017;
+        .a-verify {
+            background-color: #28a745;
             color: #fff;
             font-size: 1rem;
             text-decoration: none;
@@ -130,16 +130,17 @@
             transition: background-color 0.3s, color 0.3s;
         }
 
-        .a-edit:hover {
-            background-color: #b48814;
+        .a-verify:hover {
+            background-color: #218838;
         }
+
     </style>
 </head>
 <body>
     <div class="body">
-        <h1>Your Posts</h1>
+        <h1>Posts @ViewBag.Username</h1>
 
-        <form method="get" action="@Url.Action("Display", "Posts")">
+        <form method="get" action="@Url.Action("UserPosts", "Admin")">
             <input type="text" name="searchString" placeholder="Search..."
                    value="@ViewContext.HttpContext.Request.Query["searchString"]" />
 
@@ -171,7 +172,7 @@
 
         @foreach (var post in Model.Posts)
         {
-            <div class="card @((post.isVerified ? "border-success" : post.username == "admin" ? "border-warning" : "border-secondary"))">
+            <div class="card @((post.isVerified ? "border-success" : "border-secondary"))">
                 <div class="card-body">
                     <h2 class="card-title">@post.title</h2>
                     <p class="card-text">@post.text</p>
@@ -181,7 +182,10 @@
                     </p>
                 </div>
                 <div class="card-buttons">
-                    <a class="a-edit" href="@Url.Action("Edit", "Posts", new { id = post.id })">Edit</a> | 
+                    @if (ViewBag.Username != "admin")
+                    {
+                        <a class="a-verify" href="@Url.Action("Verify", "Admin", new { id = post.id })">Verify</a>
+                    }
                     <a class="a-delete" href="@Url.Action("Delete", "Posts", new { id = post.id })">Delete</a>
                 </div>
             </div>
